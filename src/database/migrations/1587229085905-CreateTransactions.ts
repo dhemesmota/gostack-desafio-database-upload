@@ -26,6 +26,8 @@ export default class CreateTransactinos1587229085905
           {
             name: 'value',
             type: 'decimal',
+            precision: 10,
+            scale: 2,
           },
           {
             name: 'type',

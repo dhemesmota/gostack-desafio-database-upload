@@ -8,7 +8,6 @@ class CategoriesRepository extends Repository<Category> {
     const findCategory = await this.findOne({
       where: { title },
     });
-
     if (findCategory) return findCategory;
 
     const category = this.create({

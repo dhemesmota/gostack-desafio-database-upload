@@ -21,22 +21,21 @@ class CreateTransactionService {
     category,
   }: CreateTransaction): Promise<Transaction> {
     const transactionsRepository = getCustomRepository(TransactionRepository);
-    const categorysRepository = getCustomRepository(CategoryRepository);
 
-    if (type === 'outcome') {
-      const { total } = await transactionsRepository.getBalance();
-      if (value > total) throw new AppError('Outcome value exceeds cash value');
+    const { total } = await transactionsRepository.getBalance();
+
+    if (type === 'outcome' && total < value) {
+      throw new AppError('You do not have enough balance');
     }
 
-    const { id: category_id } = await categorysRepository.findOneOrCreate(
-      category,
-    );
+    const categoriesRepository = getCustomRepository(CategoryRepository);
+    const findCategory = await categoriesRepository.findOneOrCreate(category);
 
     const transaction = transactionsRepository.create({
       title,
       value,
       type,
-      category_id,
+      category: findCategory,
     });
 
     await transactionsRepository.save(transaction);
